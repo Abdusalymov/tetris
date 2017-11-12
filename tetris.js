@@ -13,6 +13,14 @@ const matrix = [
 
 function collide(arena, player){
     const[m, o] = [player.matrix, player.pos];
+    for(let y = 0; y < m.length; ++y){
+        for(let x = 0; x < m[y].length; ++x){
+            if (m[y][x] !== 0 && (arena[y + o.y] && arena[y + o.y] [x + o.x]) !== 0){
+                return true;
+            }
+        }
+    }
+    return false; 
 }
 
 function createMatrix(w, h){
@@ -26,6 +34,7 @@ function createMatrix(w, h){
 function draw(){
     context.fillStyle = '#000';
     context.fillRect(0, 0, canvas.width, canvas.height);
+    drawMatrix(arena, {x:0, y:0});
     drawMatrix(player.matrix, player.pos);
 }
 
@@ -54,7 +63,27 @@ function merge(arena, player){
 
 function playerDrop(){
     player.pos.y++;
+    if (collide(arena, player)){
+        player.pos.y--;
+        merge(arena, player);
+        player.pos.y = 0;
+    }
     dropCounter = 0;
+}
+
+function playerMove(dir){
+    player.pos.x += dir;
+    if (collide(arena, player)){
+        player.pos.x -= dir;
+    }
+}
+
+function rotate(matrix, dir){
+    for (let y = 0; y < matrix.length; ++y){
+        for(let x = 0; x < y; ++x){
+            
+        }
+    }
 }
 
 let dropCounter = 0;
@@ -83,12 +112,13 @@ const player = {
 
 document.addEventListener('keydown', event =>{ 
     if(event.keyCode === 37){
-        player.pos.x--;
+        playerMove(-1);
     } else if(event.keyCode === 39 ){
-        player.pos.x++;
+        playerMove(1);
     } else if(event.keyCode === 40 ){
        playerDrop();
     }
 });
 
 update();
+
